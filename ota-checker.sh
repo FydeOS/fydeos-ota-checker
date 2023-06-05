@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="0.0.1"
+VERSION_FILE="$(dirname $0)""/VERSION"
 kernelA=2
 kernelB=4
 rootA=3
@@ -100,8 +100,27 @@ compare_versions() {
     return 0
 }
 
+version()
+{
+  cat $VERSION_FILE
+}
+
 main() {
-  local ahama_version=$1
+  local ahama_version;
+
+  while [ "$1" ]; do
+    case "$1" in
+      "--version"|"-v")
+        version
+        exit 0
+        ;;
+      *)
+        ahama_version=$1
+        ;;
+    esac
+    shift
+  done
+
 
   local target_part="$(get_another_part)"
   local target_partnum=$(get_part_num_of $target_part)
