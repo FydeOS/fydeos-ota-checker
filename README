@@ -1,0 +1,4 @@
+##Usage
+
+Run `ota-checker.sh "$omaha_version"`, if no more OTA update is needed, it returns 17(EEXIST).
+On error, it returns 1. Otherwise, it returns 0.
