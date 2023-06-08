@@ -9,6 +9,9 @@ rootB=5
 EEXIST=17
 MNT="$(mktemp -d)"
 
+# please keep it sync with the file name in function mark_partition_updated() in project-openfyde-patches/chromeos-base/chromeos-installer/files/postinst.patch
+fydeos_updated_indicator="/etc/.fydeos_update"
+
 cleanup() {
     umount -lf "$MNT" 2>/dev/null || :
 }
@@ -138,9 +141,15 @@ main() {
 
   compare_versions $target_version $ahama_version
 
+  local partition_updated="false"
+  [ -f "${MNT}/${fydeos_updated_indicator}" ] && partition_updated="true"
+
   if [[ "$target_version" == "$ahama_version" ]]; then
+    if [[ "$partition_updated" == "true" ]]; then
       echo "target version: ${target_version} is samee as ohama response version. Stop OTA."
       exit $EEXIST
+    fi
+    echo "It seems last update was not finished. Continue OTA."
   fi
 
   umount $MNT
